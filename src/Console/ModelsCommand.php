@@ -217,7 +217,11 @@ class ModelsCommand extends Command
     {
         $table = $model->getConnection()->getTablePrefix() . $model->getTable();
         $schema = $model->getConnection()->getDoctrineSchemaManager($table);
-        $schema->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+
+        foreach($this->laravel['config']->get('laravel-ide-helper::type_mapping') as $dbType => $doctrineType)
+        {
+            $schema->getDatabasePlatform()->registerDoctrineTypeMapping($dbType, $doctrineType);
+        }
 
         $columns = $schema->listTableColumns($table);
 
